@@ -1,0 +1,118 @@
+---
+title: "ForecastingChapter2"
+author: "Matt Salmon"
+date: "April 9, 2019"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+setwd("C:/Users/mattp/OneDrive/Loyola/ISSCM495/Chapter2")
+```
+
+```{r}
+y <- ts(c(123,39,48,52,110))
+```
+
+```{r}
+#install.packages('fpp2')
+library(fpp2)
+library(forecast)
+library(ggplot2)
+
+```
+```{r}
+
+ggseasonplot(a10,year.labels=TRUE, year.labels.left=TRUE) + 
+  ylab("$$ million")+
+  ggtitle("Seasonal plot: antidiabetic drug sales")
+```
+```{r}
+#We make the TS axis circular instead of horixontal eliminating the axis labels and replacing it with "polar"
+
+ggseasonplot(a10, polar=TRUE) + 
+  ylab("$$ million")+
+  ggtitle("Seasonal plot: antidiabetic drug sales")
+
+```
+```{r}
+autoplot(visnights[,1:5], facets=TRUE)+
+  ylab("Number of visitor nights each quarter (millions)")
+```
+
+```{r}
+library(GGally)
+visnights[,1:5] %>% as.data.frame() %>% GGally::ggpairs()
+```
+#Excercises
+##using the help function to explore facts about a dataset I will be using
+```{r}
+#?gold
+#Daily morning gold prices
+
+#?woolyrnq
+#Quarterly production of woollen yarn in Australia
+```
+Using autoplot() to plot each dataset
+```{r}
+autoplot(gold)
+autoplot(woolyrnq)
+```
+###what is the frequency of these datasets?
+```{r}
+frequency(gold)
+frequency(woolyrnq)
+```
+Gold has an annual frequency while yarn production has a quarterly frequency.
+```{r}
+###the gold dataset has one outlier which is 770.
+which.max(gold)
+```
+
+```{r}
+tute1 <- read.csv("tute1.csv", header=TRUE)
+View(tute1)
+```
+
+```{r}
+#the -1 will remove the first column which contains quarters. we do not need it.
+mytimeseries <- ts(tute1[,-1],start=1981,frequency=4)
+```
+
+```{r}
+autoplot(mytimeseries,facets=TRUE)
+#we are constructing a time series for each of the columns in the dataset.
+#facets=TRUE will jput each time series into its own graph.
+```
+```{r}
+retaildata <- readxl::read_excel("retail.xlsx", skip=1)
+#we include skip=1 becasue the document has two header rows. 
+head(retaildata, n=1)
+```
+
+```{r}
+myts <- ts(retaildata[,"A3349335T"],frequency=12 , start=c(1982,4))
+```
+```{r}
+autoplot(myts)
+#this graph shows seasonality and trend
+```
+
+```{r}
+ggseasonplot(myts)
+#there is too much happening here. Telling some of the colors apart on the legend is tough.
+```
+
+```{r}
+ggsubseriesplot(myts)
+#this graphs is not really showing me anything i see useful
+```
+
+```{r}
+gglagplot(myts)
+```
+```{r}
+ggAcf(myts)
+```
+
+
